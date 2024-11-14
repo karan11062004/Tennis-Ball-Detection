@@ -6,7 +6,6 @@ import tempfile
 import numpy as np
 import pathlib
 from pathlib import Path
-pathlib.PosixPath = pathlib.WindowsPath
 
 model_path = "runs/train/ball_person_model2/weights/best.pt"
 model = torch.hub.load("ultralytics/yolov5", "custom", path=model_path)
