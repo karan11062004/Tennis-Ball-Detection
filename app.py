@@ -8,7 +8,7 @@ import pathlib
 from pathlib import Path
 pathlib.PosixPath = pathlib.WindowsPath
 
-model_path = "models/tplayer_best.pt"
+model_path = "runs/train/ball_person_model2/weights/best.pt"
 model = torch.hub.load("ultralytics/yolov5", "custom", path=model_path)
 
 st.title("Tennis Player Detection")
