@@ -1,5 +1,4 @@
 import streamlit as st
-import cv2
 import torch
 from pathlib import Path
 import tempfile
