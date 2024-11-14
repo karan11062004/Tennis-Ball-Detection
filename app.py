@@ -20,26 +20,26 @@ img_size = 640  # Set input size to 640x640 for model
 st.markdown("""
     <style>
         .main {
-            max-width: 1000px;
+            max-width: 900px;
             padding: 20px;
-            background-color: #f0f4f8;
+            background-color: #ffffff;
             border-radius: 15px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
         }
         
-        /* Full-screen container with gradient background */
         .css-18e3th9 {
-            background: linear-gradient(135deg, #d4fc79, #96e6a1);
+            background: linear-gradient(135deg, #f6d365, #fda085);
         }
         
         h1 {
-            color: #3a3f5c;
+            color: #283593;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            font-weight: bold;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
         }
         
         .stButton>button {
-            background-color: #4CAF50;
+            background-color: #0288d1;
             color: white;
             padding: 10px 20px;
             border-radius: 10px;
@@ -49,33 +49,49 @@ st.markdown("""
             font-size: 16px;
         }
         .stButton>button:hover {
-            background-color: #45a049;
+            background-color: #0277bd;
         }
-
+        
         .stProgress .st-bs {
-            background-color: #3a3f5c !important;
+            background-color: #283593 !important;
+        }
+        
+        .stDownloadButton > button {
+            background-color: #388e3c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .stDownloadButton > button:hover {
+            background-color: #2e7d32;
         }
     </style>
 """, unsafe_allow_html=True)
 
-st.title("🎥 YOLOv5 Player and Ball Detection Application")
-st.write("Upload a video to detect players and balls using the YOLOv5 model.")
+st.title("🎾 Tennis Game Tracker")
+st.write("Detect players and balls in a tennis match using YOLOv5. Upload a video, run detection, and download the processed result.")
 
-# Divide the layout into two columns
-col1, col2 = st.columns(2)
+# Layout divided into two columns
+col1, col2 = st.columns([1, 1])
 
 # File uploader and controls in the right column
 with col2:
-    uploaded_video = st.file_uploader("Upload a video", type=["mp4", "mov", "avi", "mkv"])
+    st.write("### Upload Video for Detection")
+    uploaded_video = st.file_uploader("Choose a video file", type=["mp4", "mov", "avi", "mkv"])
 
     if uploaded_video:
-        # Create a temporary file to store the uploaded video
+        # Temporary storage for uploaded video
         temp_video_path = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
         temp_video_path.write(uploaded_video.read())
         temp_video_path.close()
 
-        if st.button("Process"):
-            # Load video and initialize parameters
+        # Process button
+        if st.button("Run Detection"):
+            # Open video, set parameters
             cap = cv2.VideoCapture(temp_video_path.name)
             output_path = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4').name
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -84,8 +100,6 @@ with col2:
             total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
             st.write("Processing video...")
-
-            # Progress bar
             progress_bar = st.progress(0)
 
             # Process each frame
@@ -122,18 +136,15 @@ with col2:
 
                 # Write processed frame to output
                 out.write(frame_resized)
-
-                # Update progress
-                progress_percentage = int((i + 1) / total_frames * 100)
-                progress_bar.progress(progress_percentage)
+                progress_bar.progress(int((i + 1) / total_frames * 100))
 
             # Release resources
             cap.release()
             out.release()
 
-            st.success("Detection complete! 🎉")
+            st.success("Detection completed!")
 
-            # Provide download button
+            # Download processed video
             with open(output_path, "rb") as file:
                 st.download_button(
                     label="Download Processed Video",
@@ -146,4 +157,4 @@ with col2:
 if uploaded_video:
     with col1:
         st.write("### Video Preview")
-        st.video(temp_video_path.name)  # Display the uploaded video preview
+        st.video(temp_video_path.name)
